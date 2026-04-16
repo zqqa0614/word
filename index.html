@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>单词记忆助手 - 考研增强版</title>
+    <title>单词记忆助手 - 考研智能版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -13,95 +13,98 @@
             background-size: 20px 20px;
         }
         .card { transition: all 0.3s ease; border-radius: 16px; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
-        .btn { transition: all 0.2s ease; border-radius: 12px; cursor: pointer; }
-        .btn:hover { transform: translateY(-2px); }
-        .word-card.fade-in { animation: fadeIn 0.5s ease-in; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.08); }
+        .btn { transition: all 0.2s ease; border-radius: 10px; cursor: pointer; }
+        .btn:active { transform: scale(0.98); }
+        .nav-btn.active { background-color: #2563eb !important; color: white !important; }
+        .word-card.fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .nav-btn.active { background-color: #2563eb !important; color: white !important; }
     </style>
 </head>
 <body class="min-h-screen">
-    <header class="bg-blue-600 text-white py-6 shadow-lg">
+    <header class="bg-blue-600 text-white py-6 shadow-md">
         <div class="container mx-auto px-4">
             <h1 class="text-3xl font-bold text-center">单词记忆助手</h1>
-            <p class="text-center mt-2 opacity-90">离线存储 · 随时导出 · 备考无忧</p>
+            <p class="text-center mt-2 opacity-90 text-sm">智能去重复 · 离线存储 · 考研必备</p>
         </div>
     </header>
 
     <main class="container mx-auto px-4 py-8">
         <div class="flex justify-center mb-8">
-            <div class="inline-flex rounded-lg shadow-sm bg-white p-1 border border-gray-200">
-                <button id="nav-input" class="nav-btn px-6 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">输入单词</button>
-                <button id="nav-study" class="nav-btn px-6 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">开始学习</button>
-                <button id="nav-list" class="nav-btn px-6 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">单词列表</button>
+            <div class="inline-flex rounded-xl shadow-sm bg-white p-1 border border-gray-200">
+                <button id="nav-input" class="nav-btn px-6 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">添加单词</button>
+                <button id="nav-study" class="nav-btn px-6 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">开始复习</button>
+                <button id="nav-list" class="nav-btn px-6 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">词库管理</button>
             </div>
         </div>
 
-        <section id="input-section" class="card bg-white p-6 mb-8 max-w-2xl mx-auto shadow-md">
-            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">添加新单词</h2>
-            <form id="word-form" class="space-y-4">
+        <section id="input-section" class="card bg-white p-8 mb-8 max-w-xl mx-auto shadow-sm">
+            <h2 class="text-xl font-bold mb-6 text-gray-800 flex items-center">
+                <span class="w-2 h-6 bg-blue-600 rounded mr-2"></span>录入新单词
+            </h2>
+            <form id="word-form" class="space-y-5">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">英文</label>
-                    <input type="text" id="english" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g. Ambition" required>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">English</label>
+                    <input type="text" id="english" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="请输入英文单词..." required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">中文含义</label>
-                    <input type="text" id="chinese" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g. 雄心，野心" required>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Chinese</label>
+                    <input type="text" id="chinese" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="请输入中文含义..." required>
                 </div>
-                <button type="submit" class="btn w-full py-3 bg-blue-600 text-white font-bold hover:bg-blue-700">添加至词库</button>
+                <button type="submit" class="btn w-full py-3 bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-200">存入本地词库</button>
             </form>
-            <div id="message" class="mt-4 text-center text-green-600 font-medium hidden">✓ 已存入浏览器本地存储</div>
+            <div id="message" class="mt-4 text-center text-emerald-600 text-sm font-medium hidden">✓ 保存成功，已加入本地存储</div>
         </section>
 
-        <section id="study-section" class="card bg-white p-8 mb-8 max-w-3xl mx-auto shadow-md hidden">
-            <div class="text-center mb-8">
-                <span id="word-count" class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">1 / 20</span>
+        <section id="study-section" class="card bg-white p-8 mb-8 max-w-2xl mx-auto shadow-sm hidden">
+            <div class="flex justify-between items-center mb-8">
+                <span id="word-count" class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full">0 / 0</span>
+                <button onclick="switchTab('input')" class="text-gray-400 text-xs hover:text-gray-600">结束学习</button>
             </div>
-            <div id="word-display" class="word-card text-center py-20 bg-gray-50 rounded-3xl mb-8 border-2 border-dashed border-gray-200">
-                <h3 id="word-english" class="text-5xl font-bold text-gray-800 mb-6">Word</h3>
-                <div id="word-chinese" class="text-3xl text-blue-600 font-medium hidden">中文含义</div>
+            <div id="word-display" class="word-card text-center py-24 bg-gradient-to-b from-gray-50 to-white rounded-3xl mb-10 border border-gray-100">
+                <h3 id="word-english" class="text-5xl font-bold text-gray-800 mb-8">Ready?</h3>
+                <div id="word-chinese" class="text-2xl text-blue-600 font-medium hidden">点击下方按钮查看</div>
             </div>
-            <div id="button-area" class="flex justify-center space-x-4">
-                <button id="show-btn" class="btn px-12 py-4 bg-gray-800 text-white font-bold hover:bg-black">查看释义</button>
+            <div id="button-area" class="flex justify-center">
+                <button id="show-btn" class="btn px-16 py-4 bg-gray-800 text-white font-bold hover:bg-black shadow-xl">想不起来了？</button>
             </div>
-            <div id="result-buttons" class="flex justify-center space-x-4 hidden">
-                <button id="next-btn" class="btn px-12 py-4 bg-blue-600 text-white font-bold hover:bg-blue-700">下一个</button>
+            <div id="result-buttons" class="flex justify-center hidden">
+                <button id="next-btn" class="btn px-16 py-4 bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-xl shadow-blue-200">记住了，下一个</button>
             </div>
         </section>
 
-        <section id="list-section" class="card bg-white p-6 mb-8 max-w-3xl mx-auto shadow-md hidden">
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 border-b pb-4 gap-4">
-                <h2 class="text-2xl font-bold text-gray-800">词库管理</h2>
+        <section id="list-section" class="card bg-white p-6 mb-8 max-w-2xl mx-auto shadow-sm hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                <h2 class="text-xl font-bold text-gray-800">词库管理</h2>
                 <div class="flex space-x-2">
-                    <button id="export-btn" class="btn px-4 py-2 bg-indigo-500 text-white text-sm hover:bg-indigo-600">导出备份</button>
+                    <button id="export-btn" class="btn px-4 py-2 bg-indigo-50 text-indigo-600 text-xs font-bold hover:bg-indigo-100">导出 JSON</button>
                     <input type="file" id="import-input" class="hidden" accept=".json">
-                    <button id="import-btn" class="btn px-4 py-2 bg-emerald-500 text-white text-sm hover:bg-emerald-600">导入备份</button>
+                    <button id="import-btn" class="btn px-4 py-2 bg-emerald-50 text-emerald-600 text-xs font-bold hover:bg-emerald-100">导入并合并</button>
                 </div>
             </div>
-            <div id="word-list" class="space-y-2 max-h-96 overflow-y-auto pr-2"></div>
-            <div id="no-words" class="text-center py-12 text-gray-400">暂无数据</div>
+            <div id="word-list" class="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar"></div>
+            <div id="no-words" class="text-center py-16 text-gray-400">词库空空如也</div>
         </section>
     </main>
 
-    <footer class="text-gray-500 text-center py-8 text-sm">
-        © 2027 考研单词助手 | 数据保存在您的当前浏览器中
+    <footer class="text-gray-400 text-center py-8 text-xs">
+        © 2026 单词记忆助手 | 数据仅存储在当前浏览器的 LocalStorage 中
     </footer>
 
     <script>
+        // 核心数据
         let words = JSON.parse(localStorage.getItem('words')) || [];
-        let currentWordIndex = 0;
         let studyList = [];
+        let currentWordIndex = 0;
 
-        // 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            // 路由导航
+            // 路由绑定
             document.getElementById('nav-input').onclick = () => switchTab('input');
             document.getElementById('nav-study').onclick = () => {
-                if(words.length === 0) return alert('请先添加单词！');
+                if(words.length === 0) return alert('词库目前没有单词，请先添加。');
                 switchTab('study');
                 startStudy();
             };
@@ -110,20 +113,84 @@
                 renderList();
             };
 
-            // 添加单词
+            // 提交逻辑
             document.getElementById('word-form').onsubmit = (e) => {
                 e.preventDefault();
-                const en = document.getElementById('english');
-                const zh = document.getElementById('chinese');
-                words.push({ english: en.value.trim(), chinese: zh.value.trim() });
+                const enInput = document.getElementById('english');
+                const zhInput = document.getElementById('chinese');
+                const en = enInput.value.trim();
+                const zh = zhInput.value.trim();
+
+                // 查重
+                if(words.some(w => w.english.toLowerCase() === en.toLowerCase())) {
+                    alert('词库中已存在该单词！');
+                    return;
+                }
+
+                words.push({ english: en, chinese: zh });
                 saveData();
-                en.value = ''; zh.value = '';
+                enInput.value = ''; zhInput.value = '';
                 const msg = document.getElementById('message');
                 msg.classList.remove('hidden');
                 setTimeout(() => msg.classList.add('hidden'), 2000);
             };
 
-            // 学习交互
+            // 导出逻辑
+            document.getElementById('export-btn').onclick = () => {
+                if(words.length === 0) return alert('没有单词可导出');
+                const data = JSON.stringify(words, null, 2);
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `考研词库备份_${new Date().toLocaleDateString()}.json`;
+                link.click();
+            };
+
+            // 智能合并导入逻辑
+            const importInput = document.getElementById('import-input');
+            document.getElementById('import-btn').onclick = () => importInput.click();
+            
+            importInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if(!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const imported = JSON.parse(event.target.result);
+                        if(!Array.isArray(imported)) throw new Error();
+
+                        // 获取当前所有英文单词集合用于快速比对
+                        const existingSet = new Set(words.map(w => w.english.toLowerCase().trim()));
+                        let addCount = 0;
+                        let skipCount = 0;
+
+                        imported.forEach(item => {
+                            if(item.english && item.chinese) {
+                                const cleanEn = item.english.toLowerCase().trim();
+                                if(!existingSet.has(cleanEn)) {
+                                    words.push({ english: item.english.trim(), chinese: item.chinese.trim() });
+                                    existingSet.add(cleanEn);
+                                    addCount++;
+                                } else {
+                                    skipCount++;
+                                }
+                            }
+                        });
+
+                        saveData();
+                        renderList();
+                        alert(`导入结果：\n成功新增: ${addCount}个\n重复跳过: ${skipCount}个`);
+                        importInput.value = ''; // 清除input
+                    } catch(err) {
+                        alert('文件格式错误：请上传有效的JSON备份文件');
+                    }
+                };
+                reader.readAsText(file);
+            };
+
+            // 复习交互
             document.getElementById('show-btn').onclick = () => {
                 document.getElementById('word-chinese').classList.remove('hidden');
                 document.getElementById('button-area').classList.add('hidden');
@@ -135,80 +202,48 @@
                 showWord();
             };
 
-            // 导出功能
-            document.getElementById('export-btn').onclick = () => {
-                if(words.length === 0) return alert('词库是空的');
-                const blob = new Blob([JSON.stringify(words, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `考研词库备份_${new Date().toLocaleDateString()}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-            };
-
-            // 导入功能
-            const importBtn = document.getElementById('import-btn');
-            const importInput = document.getElementById('import-input');
-            importBtn.onclick = () => importInput.click();
-            importInput.onchange = (e) => {
-                const file = e.target.files[0];
-                if(!file) return;
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const imported = JSON.parse(event.target.result);
-                        if(Array.isArray(imported)) {
-                            if(confirm(`识别到 ${imported.length} 个单词，是否覆盖当前词库？`)) {
-                                words = imported;
-                                saveData();
-                                renderList();
-                            }
-                        }
-                    } catch(err) { alert('文件格式不正确'); }
-                };
-                reader.readAsText(file);
-            };
-
             switchTab('input');
         });
+
+        // 核心函数
+        function switchTab(tabId) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`${tabId}-section`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).classList.add('active');
+        }
 
         function saveData() {
             localStorage.setItem('words', JSON.stringify(words));
         }
 
-        function switchTab(tab) {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`${tab}-section`).classList.remove('hidden');
-            document.getElementById(`nav-${tab}`).classList.add('active');
-        }
-
         function renderList() {
-            const list = document.getElementById('word-list');
-            const empty = document.getElementById('no-words');
-            list.innerHTML = '';
+            const listWrap = document.getElementById('word-list');
+            const emptyHint = document.getElementById('no-words');
+            listWrap.innerHTML = '';
+            
             if(words.length === 0) {
-                empty.classList.remove('hidden');
+                emptyHint.classList.remove('hidden');
                 return;
             }
-            empty.classList.add('hidden');
+            emptyHint.classList.add('hidden');
+
             words.forEach((w, i) => {
-                const div = document.createElement('div');
-                div.className = 'flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100';
-                div.innerHTML = `
-                    <div>
+                const item = document.createElement('div');
+                item.className = 'flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100 hover:bg-white hover:border-blue-200 transition-colors group';
+                item.innerHTML = `
+                    <div class="flex-1">
                         <div class="font-bold text-gray-800">${w.english}</div>
                         <div class="text-sm text-gray-500">${w.chinese}</div>
                     </div>
-                    <button onclick="deleteWord(${i})" class="text-red-400 hover:text-red-600 px-2">删除</button>
+                    <button onclick="deleteWord(${i})" class="text-gray-300 hover:text-red-500 text-xs font-medium transition-colors opacity-0 group-hover:opacity-100">删除</button>
                 `;
-                list.appendChild(div);
+                listWrap.appendChild(item);
             });
         }
 
         function deleteWord(index) {
-            if(confirm('删除后不可撤销，确定吗？')) {
+            if(confirm('确定要从库中永久移除这个单词吗？')) {
                 words.splice(index, 1);
                 saveData();
                 renderList();
@@ -223,7 +258,7 @@
 
         function showWord() {
             if(currentWordIndex >= studyList.length) {
-                alert('这一轮复习完啦！');
+                alert('🎉 太棒了！本轮复习已全部完成。');
                 switchTab('list');
                 return;
             }
@@ -231,10 +266,13 @@
             document.getElementById('word-count').textContent = `${currentWordIndex + 1} / ${studyList.length}`;
             document.getElementById('word-english').textContent = w.english;
             document.getElementById('word-chinese').textContent = w.chinese;
+            
+            // 重置视图
             document.getElementById('word-chinese').classList.add('hidden');
             document.getElementById('button-area').classList.remove('hidden');
             document.getElementById('result-buttons').classList.add('hidden');
             
+            // 动画
             const display = document.getElementById('word-display');
             display.classList.remove('fade-in');
             void display.offsetWidth;
