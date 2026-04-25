@@ -102,6 +102,17 @@
             </div>
         </div>
 
+        <!-- 单词检索 -->
+        <div class="mb-3">
+            <label for="word-search" class="sr-only">检索单词</label>
+            <div class="relative">
+                <input type="search" id="word-search" class="w-full pl-10 pr-20 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm" placeholder="检索英文或中文释义...">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">⌕</span>
+                <button id="clear-search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 hover:text-blue-600">清空</button>
+            </div>
+            <div id="search-summary" class="mt-2 text-xs text-gray-400 hidden"></div>
+        </div>
+
         <!-- 批量操作工具栏 -->
         <div class="flex items-center justify-between px-4 py-2.5 bg-gray-50 rounded-xl border border-gray-200 mb-3">
             <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-gray-600">
@@ -129,6 +140,7 @@
     let studyList = [];
     let currentWordIndex = 0;
     let selectedIndices = new Set();
+    let searchKeyword = '';
 
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('nav-input').onclick = () => switchTab('input');
@@ -200,6 +212,21 @@
             reader.readAsText(file);
         };
 
+        const searchInput = document.getElementById('word-search');
+        const clearSearchBtn = document.getElementById('clear-search');
+        searchInput.oninput = (e) => {
+            searchKeyword = e.target.value.trim().toLowerCase();
+            clearSearchBtn.classList.toggle('hidden', searchKeyword === '');
+            renderList();
+        };
+        clearSearchBtn.onclick = () => {
+            searchInput.value = '';
+            searchKeyword = '';
+            clearSearchBtn.classList.add('hidden');
+            renderList();
+            searchInput.focus();
+        };
+
         document.getElementById('show-btn').onclick = () => {
             document.getElementById('word-chinese').classList.remove('hidden');
             document.getElementById('button-area').classList.add('hidden');
@@ -234,7 +261,7 @@
     });
 
     function updateBulkBar() {
-        const total = words.length;
+        const total = getFilteredWords().length;
         const count = selectedIndices.size;
         document.getElementById('selected-count').textContent = `已选 ${count} 个`;
         document.getElementById('bulk-delete-btn').disabled = count === 0;
@@ -253,6 +280,26 @@
 
     function saveData() { localStorage.setItem('words', JSON.stringify(words)); }
 
+    function getFilteredWords() {
+        if (!searchKeyword) return words.map((word, index) => ({ word, index }));
+        return words
+            .map((word, index) => ({ word, index }))
+            .filter(({ word }) =>
+                word.english.toLowerCase().includes(searchKeyword) ||
+                word.chinese.toLowerCase().includes(searchKeyword)
+            );
+    }
+
+    function escapeHtml(text) {
+        return text.replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        })[char]);
+    }
+
     function renderList() {
         selectedIndices.clear();
         document.getElementById('select-all').checked = false;
@@ -262,20 +309,34 @@
         document.getElementById('word-total').textContent = `${words.length} 词`;
         const listWrap = document.getElementById('word-list');
         const emptyHint = document.getElementById('no-words');
+        const searchSummary = document.getElementById('search-summary');
+        const filteredWords = getFilteredWords();
         listWrap.innerHTML = '';
 
-        if (words.length === 0) { emptyHint.classList.remove('hidden'); return; }
+        searchSummary.classList.toggle('hidden', searchKeyword === '');
+        searchSummary.textContent = searchKeyword ? `找到 ${filteredWords.length} 个匹配结果` : '';
+
+        if (words.length === 0) {
+            emptyHint.textContent = '词库空空如也';
+            emptyHint.classList.remove('hidden');
+            return;
+        }
+        if (filteredWords.length === 0) {
+            emptyHint.textContent = '没有找到匹配的单词';
+            emptyHint.classList.remove('hidden');
+            return;
+        }
         emptyHint.classList.add('hidden');
 
-        words.forEach((w, i) => {
+        filteredWords.forEach(({ word: w, index: i }) => {
             const item = document.createElement('div');
             item.className = 'word-item flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 hover:bg-white hover:border-blue-200 transition-colors group cursor-pointer';
             item.dataset.idx = i;
             item.innerHTML = `
                 <input type="checkbox" class="word-checkbox" data-idx="${i}">
                 <div class="flex-1 min-w-0">
-                    <div class="font-bold text-gray-800 truncate">${w.english}</div>
-                    <div class="text-sm text-gray-500 truncate">${w.chinese}</div>
+                    <div class="font-bold text-gray-800 truncate">${escapeHtml(w.english)}</div>
+                    <div class="text-sm text-gray-500 truncate">${escapeHtml(w.chinese)}</div>
                 </div>
                 <button class="delete-single text-gray-300 hover:text-red-500 text-xs font-medium transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0" data-idx="${i}">删除</button>
             `;
